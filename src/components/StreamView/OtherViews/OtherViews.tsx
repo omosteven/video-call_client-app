@@ -4,14 +4,23 @@ import ShareActions from "../common/ShareActions/ShareActions";
 import "./OtherViews.scss";
 
 const OtherViews = (props: {
-  hasOtherMember?: Boolean;
+  hasOtherMember: Boolean;
   userVideo?: any;
   userName?: any;
   callId?: any;
   answerCall?: Function;
   hasIncomingCall?: Boolean;
+  stream: MediaStream;
 }) => {
-  const { userName, userVideo, callId, hasIncomingCall, answerCall } = props;
+  const {
+    userName,
+    userVideo,
+    callId,
+    hasIncomingCall,
+    answerCall,
+    stream,
+    hasOtherMember,
+  } = props;
 
   return (
     <div className="other-views">
@@ -22,6 +31,8 @@ const OtherViews = (props: {
           videoName={userName}
           hasIncomingCall={hasIncomingCall}
           answerCall={answerCall}
+          stream={stream}
+          hasOtherMember={hasOtherMember}
         />
       ))}
 

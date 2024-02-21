@@ -6,13 +6,24 @@ const MinimizedView = (props: {
   videoName?: any;
   hasIncomingCall?: Boolean;
   answerCall?: Function;
+  stream: MediaStream;
+  hasOtherMember: Boolean;
 }) => {
-  const { videoSrc, videoName, hasIncomingCall, answerCall } = props;
+  const {
+    videoSrc,
+    videoName,
+    hasIncomingCall,
+    answerCall,
+    stream,
+    hasOtherMember,
+  } = props;
   return (
     <div className="minimized-view">
       {/* mine */}
       <h5>{videoName || "Steven Omole"}</h5>
-      {videoSrc?.current && <video ref={videoSrc} autoPlay playsInline />}
+      {videoSrc?.current && stream && hasOtherMember && (
+        <video ref={videoSrc} autoPlay playsInline />
+      )}
       {hasIncomingCall && (
         <Button text="Accept Call" onClick={() => answerCall?.()} />
       )}

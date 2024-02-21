@@ -14,7 +14,7 @@ const ContextProvider = (props: {
 
   const [callAccepted, setCallAccepted] = useState(false);
   const [callEnded, setCallEnded] = useState(false);
-  const [stream, setStream] = useState();
+  const [stream, setStream] = useState<MediaStream>();
   const [name, setName] = useState("StevenTest");
   const [call, setCall] = useState<{
     signal?: any;
@@ -37,17 +37,18 @@ const ContextProvider = (props: {
   const startWebcam = async () => {
     try {
       // Request access to the user's camera
-      const stream: any = await navigator.mediaDevices.getUserMedia({
+      const streamVideo: any = await navigator.mediaDevices.getUserMedia({
         video: true,
         audio: true,
       });
 
-      if (myVideo.current) {
-        setStream(stream);
-        myVideo.current.srcObject = stream;
-        return stream;
-      }
-      return stream;
+      // if (myVideo.current) {
+      setStream(streamVideo);
+      // console.log('video started', streamVideo)
+      myVideo.current.srcObject = streamVideo;
+      return streamVideo;
+      // }
+      // return streamVideo;
     } catch (error) {
       console.error("Error accessing webcam:", error);
     }
@@ -57,48 +58,35 @@ const ContextProvider = (props: {
     if (myVideo.current) {
       const stream = myVideo.current.srcObject;
       if (stream) {
-        const tracks: Array<any> = stream.getTracks();
-        tracks.forEach((track) => track.stop());
+        // const tracks: Array<any> = stream?.getTracks?.();
+        // tracks.forEach((track) => track.stop());
       }
     }
   };
 
-  // useEffect(() => {
-  //   const myVideoRef = myVideo.current;
-
-  //   if (hasMeetingStarted) {
-  //     startWebcam();
-  //   }
-
-  //   socket.on("me", (id) => setMe(id));
-  //   socket.on("callUser", ({ from, name: callerName, signal }) => {
-  //     setCall({ isReceivingCall: true, from, name: callerName, signal });
-  //   });
-
-  //   return () => {
-  //     if (myVideoRef) {
-  //       const stream = myVideoRef.srcObject;
-  //       if (stream) {
-  //         const tracks: Array<any> = stream.getTracks();
-  //         tracks.forEach((track) => track.stop());
-  //       }
-  //     }
-  //   };
-  //   // eslint-disable-next-line
-  // }, [hasMeetingStarted]);
-
   useEffect(() => {
-    navigator.mediaDevices.getUserMedia({ video: true, audio: true })
-    .then((currentStream:any) => {
-        setStream(currentStream);
-        myVideo.current.srcObject = currentStream;
+    const myVideoRef = myVideo.current;
+
+    if (hasMeetingStarted) {
+      startWebcam();
+    }
+
+    socket.on("me", (id) => setMe(id));
+    socket.on("callUser", ({ from, name: callerName, signal }) => {
+      setCall({ isReceivingCall: true, from, name: callerName, signal });
     });
-    
-    socket.on('me', (id) => setMe(id));
-    socket.on('callUser', ({ from, name: callerName, signal }) => {
-        setCall({ isReceivingCall: true, from, name: callerName, signal });
-    });
-}, []);
+
+    return () => {
+      if (myVideoRef) {
+        const stream = myVideoRef.srcObject;
+        if (stream) {
+          // const tracks: Array<any> = stream.getTracks();
+          // tracks.forEach((track) => track.stop());
+        }
+      }
+    };
+    // eslint-disable-next-line
+  }, [hasMeetingStarted]);
 
   const answerCall = () => {
     setCallAccepted(true);
@@ -109,57 +97,49 @@ const ContextProvider = (props: {
     });
 
     peer.on("stream", (currentStream: any) => {
-      // const tempVid1 = myVideo.current.srcObject;
+      console.log("answered call", currentStream);
+      // if (userVideo?.current) {
       userVideo.current.srcObject = currentStream;
+      // }
     });
     peer.signal(call.signal);
     connectionRef.current = peer;
   };
 
-  // const initiateCall = (id: any, callerVideoStream: any) => {
-  //   const peer = new Peer({
-  //     initiator: true,
-  //     trickle: false,
-  //     stream: callerVideoStream,
-  //   });
-
-  //   peer.on("signal", (data: any) => {
-  //     socket.emit("callUser", {
-  //       userToCall: id,
-  //       signalData: data,
-  //       from: me,
-  //       name,
-  //     });
-  //   });
-
-  //   peer.on("stream", (currentStream: any) => {
-  //     const tempVideo = myVideo.current.srcObject
-  //     userVideo.current.srcObject = tempVideo;
-  //   });
-  //   socket.on("callAccepted", (signal) => {
-  //     setCallAccepted(true);
-  //     peer.signal(signal);
-  //   });
-  //   connectionRef.current = peer;
-  // };
-
-  const callUser = async (id: any) => {
-    // const callerVideoStream = await startWebcam();
-    // setTimeout(() => {
-    //   initiateCall(id, callerVideoStream);
-    // }, 3000);
-    const peer = new Peer({ initiator: true, trickle: false, stream });
-    peer.on('signal', (data) => {
-            socket.emit('callUser', { userToCall: id, signalData: data, from: me, name });
+  const initiateCall = (id: any, callerVideoStream: any) => {
+    const peer = new Peer({
+      initiator: true,
+      trickle: false,
+      stream: callerVideoStream,
     });
-    peer.on('stream', (currentStream) => {
-        userVideo.current.srcObject = currentStream;
+
+    peer.on("signal", (data: any) => {
+      socket.emit("callUser", {
+        userToCall: id,
+        signalData: data,
+        from: me,
+        name,
+      });
     });
-    socket.on('callAccepted', (signal) => {
-        setCallAccepted(true);
-        peer.signal(signal);
+
+    peer.on("stream", (currentStream: any) => {
+      console.log("initiate call", currentStream);
+      //  if(userVideo?.current){
+      userVideo.current.srcObject = currentStream;
+      //  }
+    });
+    socket.on("callAccepted", (signal) => {
+      setCallAccepted(true);
+      peer.signal(signal);
     });
     connectionRef.current = peer;
+  };
+
+  const callUser = async (id: any) => {
+    const callerVideoStream = await startWebcam();
+    setTimeout(() => {
+      initiateCall(id, callerVideoStream);
+    }, 3000);
   };
 
   const leaveCall = () => {
@@ -168,6 +148,7 @@ const ContextProvider = (props: {
     window.location.reload();
   };
 
+  console.log('userVideo', userVideo)
   return (
     <SocketContext.Provider
       value={{

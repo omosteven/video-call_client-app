@@ -20,10 +20,21 @@ const StreamView = () => {
     me,
   } = useContext<any>(SocketContext);
 
-  console.log({call, myVideo, userVideo, stream, callAccepted,name, me})
+  console.log({
+    call,
+    myVideo,
+    userVideo,
+    stream,
+    callAccepted,
+    name,
+    me,
+    callEnded,
+    isEqual: myVideo === userVideo,
+    g:callAccepted && !callEnded
+  });
   return (
     <div className="stream-view">
-      <BaseView myVideo={myVideo}/>
+      <BaseView myVideo={myVideo} />
       <OtherViews
         userVideo={userVideo}
         userName={call?.name}
@@ -31,6 +42,7 @@ const StreamView = () => {
         callId={me}
         answerCall={answerCall}
         hasIncomingCall={call?.isReceivingCall && !callAccepted}
+        stream={stream}
       />
       <StreamViewActions
         {...{ startWebcam, stopWebcam }}
