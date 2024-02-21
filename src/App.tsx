@@ -1,24 +1,41 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import "./App.css";
+import StreamView from "components/StreamView/StreamView";
+import GetStarted from "pages/GetStarted/GetStarted";
+import { useState } from "react";
+import { ContextProvider } from "socketContext";
+
+export const MODES = {
+  AUTH: "AUTH",
+  STREAM: "STREAM",
+};
 
 function App() {
+  const [mode, setMode] = useState(MODES.AUTH);
+  const [isCaller, setIsCaller] = useState(false);
+
+  const startStream = (isCalling: boolean) => {
+    setIsCaller(isCalling);
+    setMode(MODES.STREAM);
+  };
+
+  const renderBasedOnMode = () => {
+    switch (mode) {
+      case MODES.AUTH:
+        return <GetStarted startStream={startStream} />;
+      case MODES.STREAM:
+        return <StreamView />;
+      default:
+        return "";
+    }
+  };
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div className="">
+      <ContextProvider
+        hasMeetingStarted={!isCaller ? mode === MODES.STREAM : isCaller}
+      >
+        {renderBasedOnMode()}
+      </ContextProvider>
     </div>
   );
 }

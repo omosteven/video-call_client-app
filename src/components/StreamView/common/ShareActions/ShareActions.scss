@@ -1,0 +1,22 @@
+@import "components/ui/__variables";
+
+.share-actions {
+  background-color: $secondary-color;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-radius: $border-radius;
+  padding: 0.5rem 1rem; //1rem
+  b {
+    color: white;
+    font-size: 14px;
+    cursor: pointer;
+  }
+  button {
+    width: fit-content !important;
+    font-size: 14px;
+    border-color: $white-color !important;
+    background-color: transparent !important;
+    color: $white-color !important;
+  }
+}

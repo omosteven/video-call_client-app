@@ -1,0 +1,70 @@
+@import "components/ui/__variables";
+
+.base-view {
+  border: 0.1px solid $white-color;
+  // width: 100%;
+  // height: 90vh;
+  position: fixed;
+  left: 2rem;
+  top: 2rem;
+  right: 24rem;
+  bottom: 2rem;
+
+  border-radius: $border-radius;
+
+  video {
+    width: 100%;
+    height: 100%;
+    border-radius: $border-radius;
+  }
+  h5 {
+    color: $white-color;
+    position: absolute;
+    z-index: 1000;
+    right: 0.5rem;
+    margin-top: 0.5rem;
+    background-color: $background-color;
+    padding: 0.5rem;
+    font-size: 12px;
+    border-radius: $border-radius;
+    opacity: 0.8;
+  }
+
+  &-full {
+    right: 0.5rem;
+    top: 0.5rem;
+    left: 0.5rem;
+    bottom: 0.5rem;
+    border-color: $secondary-color;
+    h5 {
+      //   left: 0.5rem;
+      right: 23rem;
+      top: 1rem;
+    }
+  }
+
+  div {
+    padding: 1rem;
+    width: 2rem;
+    position: absolute;
+    z-index: 1;
+    left: 1rem;
+    top: 1rem;
+    cursor: pointer;
+    &.full {
+      border: 1px solid $secondary-color;
+      padding: 1rem;
+      width: 2rem;
+      position: absolute;
+      z-index: 1;
+      left: 1rem;
+      top: 1rem;
+      border-radius: $border-radius;
+    }
+    &.default {
+      height: 1rem;
+      width: 0.2rem;
+      border: 0.5px solid $white-color;
+    }
+  }
+}

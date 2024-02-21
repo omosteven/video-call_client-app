@@ -1,0 +1,33 @@
+@import "components/ui/__variables";
+
+.minimized-view {
+  width: 100%;
+  height: 25vh;
+  border: 0.5px solid $white-color;
+  border-radius: $border-radius;
+  background-color: $gray-color;
+  video {
+    width: 100%;
+    height: 100%;
+    border-radius: $border-radius;
+  }
+
+  h5 {
+    color: $white-color;
+    position: absolute;
+    z-index: 1000;
+    right: 0.5rem;
+    margin-top: 0.5rem;
+    background-color: $background-color;
+    padding: 0.5rem;
+    font-size: 12px;
+    border-radius: $border-radius;
+    opacity: 0.8;
+  }
+
+  &.mine {
+    h5 {
+      background-color: $secondary-color;
+    }
+  }
+}
