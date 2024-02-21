@@ -96,21 +96,21 @@ const ContextProvider = (props: {
     });
 
     peer.on("stream", (currentStream: any) => {
-      userVideo.current.srcObject = myVideo.current.srcObject;
+      const tempVid1 = myVideo.current.srcObject;
+      userVideo.current.srcObject = tempVid1;
     });
     peer.signal(call.signal);
     connectionRef.current = peer;
   };
 
-  const initiateCall = (id: any, videoStream: any) => {
+  const initiateCall = (id: any, callerVideoStream: any) => {
     const peer = new Peer({
       initiator: true,
       trickle: false,
-      stream: videoStream,
+      stream: callerVideoStream,
     });
 
     peer.on("signal", (data: any) => {
-      console.log("initiate signal");
       socket.emit("callUser", {
         userToCall: id,
         signalData: data,
@@ -120,7 +120,8 @@ const ContextProvider = (props: {
     });
 
     peer.on("stream", (currentStream: any) => {
-      userVideo.current.srcObject = videoStream;
+      const tempVideo = myVideo.current.srcObject
+      userVideo.current.srcObject = tempVideo;
     });
     socket.on("callAccepted", (signal) => {
       setCallAccepted(true);
@@ -130,9 +131,9 @@ const ContextProvider = (props: {
   };
 
   const callUser = async (id: any) => {
-    const videoStream = await startWebcam();
+    const callerVideoStream = await startWebcam();
     setTimeout(() => {
-      initiateCall(id, videoStream);
+      initiateCall(id, callerVideoStream);
     }, 3000);
   };
 
