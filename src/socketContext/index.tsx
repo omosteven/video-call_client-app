@@ -4,7 +4,7 @@ import Peer from "simple-peer";
 
 const SocketContext = createContext({});
 
-const socket = io("http://localhost:8080");
+const socket = io("https://video-call-server-app.vercel.app");
 
 const ContextProvider = (props: {
   children: ReactNode;
