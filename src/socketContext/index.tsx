@@ -96,7 +96,7 @@ const ContextProvider = (props: {
     });
 
     peer.on("stream", (currentStream: any) => {
-      userVideo.current.srcObject = stream;
+      userVideo.current.srcObject = myVideo.current.srcObject;
     });
     peer.signal(call.signal);
     connectionRef.current = peer;
